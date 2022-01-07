@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>document.getElementsByTagName("html")[0].className += " js";</script>
+<link rel="stylesheet" href="https://unpkg.com/codyhouse-framework/main/assets/css/style.min.css">
+<style>
+/* -------------------------------- 
+
+File#: _1_vertical-timeline
+Title: Vertical Timeline
+Descr: A vertical timeline used to display a sequence of events/steps
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+
+:root {
+  --v-timeline-marker-size: 16px;
+  --v-timeline-track-width: 2px;
+  --v-timeline-triangle-size: 12px;
+  --v-timeline-sections-gap: var(--space-lg);
+  --v-timeline-items-gap: var(--space-sm);
+ 
+}
+
+.v-timeline {
+  position: relative;
+  padding: var(--space-lg) 0;
+}
+.v-timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: calc((var(--v-timeline-marker-size) - var(--v-timeline-track-width))*0.5);
+  height: 100%;
+  width: var(--v-timeline-track-width);
+  background-color: hsla(var(--color-contrast-higher-h), var(--color-contrast-higher-s), var(--color-contrast-higher-l), 0.1);
+}
+
+.v-timeline__section {
+  position: relative;
+  display: flex;
+}
+.v-timeline__section:not(:last-of-type) {
+  margin-bottom: var(--v-timeline-sections-gap);
+}
+
+.v-timeline__marker {
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: relative;
+  height: var(--v-timeline-marker-size);
+  width: var(--v-timeline-marker-size);
+  border-radius: 50%;
+  margin-right: calc(var(--v-timeline-triangle-size) + var(--space-xxs));
+}
+
+.v-timeline__item {
+  position: relative;
+  top: calc(0.5 * var(--v-timeline-marker-size));
+  flex-grow: 1;
+}
+.v-timeline__item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: calc(-1 * var(--v-timeline-triangle-size) + 1px);
+  height: var(--v-timeline-triangle-size);
+  width: var(--v-timeline-triangle-size);
+  background-color: inherit;
+  -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 100%);
+          clip-path: polygon(0% 0%, 100% 0%, 100% 100%);
+}
+.v-timeline__item:not(:last-child) {
+  margin-bottom: var(--v-timeline-items-gap);
+}
+.v-timeline__item:not(:first-child) .v-timeline__date {
+  display: none;
+}
+.v-timeline__item:not(:first-child)::before {
+  display: none;
+}
+
+.v-timeline__date-value {
+  color: var(--color-contrast-medium);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+@media not all and (min-width: 64rem) {
+  .v-timeline__item:first-child {
+    border-top-left-radius: 0;
+  }
+}
+@media (min-width: 64rem) {
+  .v-timeline::before {
+    left: calc(50% - var(--v-timeline-track-width)/2);
+  }
+
+  .v-timeline__section {
+    width: calc(50% + var(--v-timeline-marker-size)/2);
+  }
+  .v-timeline__section:nth-child(odd) {
+    flex-direction: row-reverse;
+  }
+  .v-timeline__section:nth-child(odd) .v-timeline__marker {
+    margin-right: 0;
+    margin-left: calc(var(--v-timeline-triangle-size) + var(--space-xxs));
+  }
+  .v-timeline__section:nth-child(odd) .v-timeline__item::before {
+    left: auto;
+    right: calc(-1 * var(--v-timeline-triangle-size) + 1px);
+    -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+  }
+  .v-timeline__section:nth-child(odd) .v-timeline__item:first-child {
+    border-top-right-radius: 0;
+  }
+  .v-timeline__section:nth-child(odd) .v-timeline__date {
+    right: calc(-2 * (var(--v-timeline-triangle-size) + var(--space-xxs)) - var(--v-timeline-marker-size));
+    -webkit-transform: translateX(100%) translateY(-50%);
+            transform: translateX(100%) translateY(-50%);
+  }
+  .v-timeline__section:nth-child(even) {
+    margin-left: auto;
+  }
+  .v-timeline__section:nth-child(even) .v-timeline__item:first-child {
+    border-top-left-radius: 0;
+  }
+  .v-timeline__section:nth-child(even) .v-timeline__date {
+    left: calc(-2 * (var(--v-timeline-triangle-size) + var(--space-xxs)) - var(--v-timeline-marker-size));
+    -webkit-transform: translateX(-100%) translateY(-50%);
+            transform: translateX(-100%) translateY(-50%);
+  }
+
+  .v-timeline__section--is-hidden {
+    opacity: 0;
+  }
+
+  .v-timeline__date {
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+  }
+
+  .js .v-timeline[data-animation=on] .v-timeline__marker {
+    opacity: 0;
+    -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+    transition: opacity 0.6s, -webkit-transform 0.6s var(--ease-out);
+    transition: transform 0.6s var(--ease-out), opacity 0.6s;
+    transition: transform 0.6s var(--ease-out), opacity 0.6s, -webkit-transform 0.6s var(--ease-out);
+  }
+  .js .v-timeline[data-animation=on] .v-timeline__item {
+    opacity: 0;
+    transition: opacity 0.6s, -webkit-transform 0.6s var(--ease-out);
+    transition: transform 0.6s var(--ease-out), opacity 0.6s;
+    transition: transform 0.6s var(--ease-out), opacity 0.6s, -webkit-transform 0.6s var(--ease-out);
+  }
+  .js .v-timeline[data-animation=on] .v-timeline__section:nth-child(odd) .v-timeline__item {
+    -webkit-transform: translateX(-50px);
+            transform: translateX(-50px);
+  }
+  .js .v-timeline[data-animation=on] .v-timeline__section:nth-child(even) .v-timeline__item {
+    -webkit-transform: translateX(50px);
+            transform: translateX(50px);
+  }
+  .js .v-timeline[data-animation=on] .v-timeline__section--animate .v-timeline__item {
+    -webkit-transform: translateX(0) !important;
+            transform: translateX(0) !important;
+    opacity: 1;
+  }
+  .js .v-timeline[data-animation=on] .v-timeline__section--animate .v-timeline__marker {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    opacity: 1;
+  }
+}
+.v-timeline--icons {
+  --v-timeline-marker-size: 3em;
+}
+</style>
+</head>
+<body>
+<div class="position-relative z-index-1 overflow-hidden padding-y-xl bg-dark">
+  <div class="margin-bottom-lg">
+    <h1 class="text-center">Design @ DigitalOcean</h1>
+  </div>
+  <div class="container max-width-adaptive-lg">
+    <div class="v-timeline js-v-timeline" data-animation="on">
+
+
+
+
+
+      
+      
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">November, 2011</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/november2011.png" alt="November2011"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20111115121908/http://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+      
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">January, 2012</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/jan2012.png" alt="Jan2012"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20120119200636/https://digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">April, 2012</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/april2012.png" alt="April2012"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20120502013121/https://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">August, 2012</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/august2012.png" alt="August2012"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20121011062241/https://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">January, 2013</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/jan2013.png" alt="Jan2013"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20130115192628/https://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">April, 2013</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/april2013.png" alt="April2013"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20130430220640/https://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">March, 2014</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/march2014.png" alt="March2014"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20140315202634/https://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">June, 2014</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/june2014.png" alt="June2014"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20140625121237/https://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">August, 2015</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/august2015.png" alt="August2015"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20150813220932/https://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">August, 2016</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/august2016.png" alt="August2016"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20160819205718/https://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">February, 2018</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/feb2018.png" alt="Feb2018"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20180216085304/http://digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">September, 2018</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/sep2018.png" alt="Sep2018"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20180929170103/https://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">March, 2019</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/march2019.png" alt="March2019"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20190319085636/http://digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">May, 2020</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/may2020.png" alt="May2020"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20200522080410/https://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">April, 2021</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/april2021.png" alt="April2021"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20210409115430/http://digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">May, 2021</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/may2021.png" alt="May2021"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20210525005910/http://digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">June, 2021</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/june2021.png" alt="June2021"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20210626202716/http://digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+      <section class="v-timeline__section js-v-timeline__section">
+        <div class="v-timeline__marker bg-contrast-high border border-3 border-bg-dark" aria-hidden="true"></div>
+  
+        <div class="v-timeline__items-group">
+          <div class="v-timeline__item bg-light padding-md radius-md shadow-xs">
+            <div class="v-timeline__date margin-bottom-sm">
+              <time class="v-timeline__date-value" datetime="2011-11T00:00">October, 2021</time>
+            </div>
+            <div class="text-component">
+
+              <p><img src="/Users/katiepaulson/Downloads/Websites/images/october2021.png" alt="October2021"></p>
+            </div>
+  
+            <div class="margin-top-md">
+              <a class="btn btn--primary" href="https://web.archive.org/web/20211026100915/https://www.digitalocean.com/" target="_blank">See it live</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
+    </div>
+  </div>
+</div>
+<script src="https://unpkg.com/codyhouse-framework/main/assets/js/util.js"></script>
+<script>
+(function() {
+  var VTimeline = function(element) {
+    this.element = element;
+    this.sections = this.element.getElementsByClassName('js-v-timeline__section');
+    this.animate = this.element.getAttribute('data-animation') && this.element.getAttribute('data-animation') == 'on' ? true : false;
+    this.animationClass = 'v-timeline__section--animate';
+    this.animationDelta = '-150px';
+    initVTimeline(this);
+  };
+
+  function initVTimeline(element) {
+    if(!element.animate) return;
+    for(var i = 0; i < element.sections.length; i++) {
+      var observer = new IntersectionObserver(vTimelineCallback.bind(element, i),
+      {rootMargin: "0px 0px "+element.animationDelta+" 0px"});
+      observer.observe(element.sections[i]);
+    }
+  };
+
+  function vTimelineCallback(index, entries, observer) {
+    if(entries[0].isIntersecting) {
+      Util.addClass(this.sections[index], this.animationClass);
+      observer.unobserve(this.sections[index]);
+    } 
+  };
+
+  //initialize the VTimeline objects
+  var timelines = document.querySelectorAll('.js-v-timeline'),
+    intersectionObserverSupported = ('IntersectionObserver' in window && 'IntersectionObserverEntry' in window && 'intersectionRatio' in window.IntersectionObserverEntry.prototype),
+    reducedMotion = Util.osHasReducedMotion();
+  if( timelines.length > 0) {
+    for( var i = 0; i < timelines.length; i++) {
+      if(intersectionObserverSupported && !reducedMotion) (function(i){new VTimeline(timelines[i]);})(i);
+      else timelines[i].removeAttribute('data-animation');
+    }
+  }
+}());
+
+
+</script>
+</body>
+</html>
